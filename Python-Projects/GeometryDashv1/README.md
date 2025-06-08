@@ -1,4 +1,5 @@
 Geometry Dash in Python from scratch, this is a v1 and more features will be added soon.
+It has 3 levels and a level editor. You can also save and load local levels.
 
 Upcoming features in v2:
 - add deleting option
