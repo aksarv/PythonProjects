@@ -34,9 +34,9 @@ class TuringMachine:
                     symbol = self.tape[self.tape_pos]
                     #print("Read a", symbol)
                     #print("The rule's symbol expected", rule.curr_symbol)
-                    if (symbol == "" and rule.curr_symbol == "") or (symbol.isnumeric() and int(symbol) == rule.curr_symbol):
+                    if (symbol == "" and rule.curr_symbol == "") or ((isinstance(symbol, int) or symbol.isnumeric()) and int(symbol) == rule.curr_symbol):
                         if rule.next_state == "HaltPositive":
-                            return 1
+                            return self.tape
                         elif rule.next_state == "HaltNegative":
                             return 0
                         self.tape[self.tape_pos] = rule.write_symbol
@@ -58,7 +58,7 @@ class TuringMachine:
 
 
 # Count even number of 1s
-machine = TuringMachine(0, list("011"), 0,
+even_ones = TuringMachine(0, list("011"), 0,
                         [
                             Rule(0, 0, 0, 0, "R"),
                             Rule(0, 1, 1, 1, "R"),
@@ -68,9 +68,21 @@ machine = TuringMachine(0, list("011"), 0,
                             Rule(1, "", "HaltNegative", "", "R")
                         ])
 
-result = machine.run()
+increment = TuringMachine(0, list(input("Enter bit pattern to increment: ")), 0, [
+    Rule(0, 0, 0, 0, "R"),
+    Rule(0, 1, 0, 1, "R"),
+    Rule(0, "", 1, "", "L"),
+    Rule(1, 0, 4, 1, "S"),
+    Rule(1, 1, 1, 0, "L"),
+    Rule(1, "", 4, 1, "S"),
+    Rule(4, 0, 4, 0, "L"),
+    Rule(4, 1, 4, 1, "L"),
+    Rule(4, "", "HaltPositive", "", "R")
+])
+
+result = increment.run()
 
 if result == 0:
-    print("Not an even number of 1s")
+    print("Invalid input")
 else:
-    print("Even number of 1s")
+    print("".join([str(x) for x in result]))
