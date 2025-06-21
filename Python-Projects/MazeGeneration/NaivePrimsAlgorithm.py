@@ -1,12 +1,19 @@
 import random
 import pygame
+import cv2
+import numpy as np
+
+img = cv2.imread("sm.png")
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+height, width, _ = img.shape
 
 print("Imports done")
 
-N = 350
+N = 100
 mst = set()
 visited = set()
-start = (0, 0)
+start = (random.randint(0, N - 1), random.randint(0, N - 1))
 visited.add(start)
 
 
@@ -33,9 +40,19 @@ while len(visited) < N ** 2:
             new_v = (v[0] + dx, v[1] + dy)
             new_x, new_y = new_v
             if 0 <= new_x < N and 0 <= new_y < N and new_v not in visited:
-                candidates.append((v, new_v, 1))
+                cell_x = int((new_x + 0.5) / N * height)
+                cell_y = int((new_y + 0.5) / N * width)
+                cell_x = min(height - 1, max(0, cell_x))
+                cell_y = min(width - 1, max(0, cell_y))
+                pixel = img[cell_x, cell_y]
+                is_black = np.all(pixel < 60)
+                candidates.append((v, new_v, (10 if is_black else 1)))
     min_weight = min(candidates, key=lambda l: l[2])[2]
-    min_edge = random.choice([x for x in candidates if x[2] == min_weight])
+    best_candidates = [x for x in candidates if x[2] == min_weight]
+    if min_weight == 1:
+        min_edge = random.choice(best_candidates)
+    else:
+        min_edge = next(x for x in best_candidates if get_dir(x[0][0], x[0][1], x[1][0], x[1][1]) == "R")
     mst.add(min_edge)
     visited.add(min_edge[1])
 
@@ -55,7 +72,7 @@ print("...done")
 
 pygame.init()
 
-scr_dim = 800
+scr_dim = 720
 scr = pygame.display.set_mode((scr_dim, scr_dim))
 
 block_size = scr_dim / N
