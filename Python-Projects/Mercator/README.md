@@ -1,0 +1,1 @@
+This was an attempt to recreate something like thetruesize.com, where some sort of polygon is defined for each of the countries and they can be moved to different positions, allowing the distortion of the Mercator projection to be truly visualised if say it is moved to the equator.
