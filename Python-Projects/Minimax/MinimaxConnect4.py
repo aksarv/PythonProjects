@@ -125,8 +125,7 @@ def apply_move(board, turn, move):
             break
     return n
 
-def minimax(board, is_max_turn, turn, curr_depth, max_depth):
-    #print(board, is_max_turn, turn, curr_depth, max_depth)
+def minimax(board, is_max_turn, turn, curr_depth, max_depth, alpha=-float("inf"), beta=float("inf")):
     if curr_depth == max_depth:
         return evaluate(board)
     
@@ -146,6 +145,10 @@ def minimax(board, is_max_turn, turn, curr_depth, max_depth):
                 maximum_so_far = new_score[0]
                 maximum_move = move
                 maximum_moves.append([new_score, move])
+            if maximum_so_far >= beta:
+              break
+            if maximum_so_far > alpha:
+              alpha = maximum_so_far
         if curr_depth > 0:
             return [maximum_so_far, maximum_move]
         else:
@@ -162,6 +165,10 @@ def minimax(board, is_max_turn, turn, curr_depth, max_depth):
                 minimum_so_far = new_score[0]
                 minimum_move = move
                 minimum_moves.append([new_score, move])
+            if minimum_so_far <= alpha:
+              break
+            if minimum_so_far < beta:
+              beta = minimum_so_far
         if curr_depth > 0:
             return [minimum_so_far, minimum_move]
         else:
