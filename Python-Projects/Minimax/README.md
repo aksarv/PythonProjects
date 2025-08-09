@@ -1,1 +1,1 @@
-Minimax plays Connect 4
+Minimax plays Connect 4 (added alpha beta pruning)
