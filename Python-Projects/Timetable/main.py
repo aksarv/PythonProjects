@@ -1,6 +1,7 @@
 from data import *
 from random import randint, choice, random
 from copy import deepcopy
+from math import e
 
 timetable = [
     [{r: None for r in rooms} for _ in range(7)] for __ in range(5)
@@ -68,7 +69,7 @@ def fitness(tt):
 
 def mutate(tt1):
     tt = deepcopy(tt1)
-    rand = randint(1, 4)
+    rand = randint(1, 3)
     if rand == 1:
         day, period, room = randint(0, 4), randint(0, 6), choice(rooms)
         day1, period1, room1 = randint(0, 4), randint(0, 6), choice(rooms)
@@ -84,15 +85,15 @@ def mutate(tt1):
     return tt
 
 
-# I tried adding a small chance of accepting a worse fitness as a sort of simulated annealing approach but it didn't really work
+anneal = False
 epochs = 100000
 best_tt = deepcopy(timetable)
 best_fitness = -float("inf")
+initial_temp = 10
 for i in range(epochs):
     new_tt = mutate(best_tt)
-    if i % 100 == 0:
-        print(str(round(i / epochs * 100, 2)) + f"%\tBest Fitness: {best_fitness}\tCurrent Fitness: {fitness(new_tt)}")
-    if fitness(new_tt) > best_fitness:
+    print(str(round(i / epochs * 100, 2)) + f"%\tBest Fitness: {best_fitness}\tCurrent Fitness: {fitness(new_tt)}\tTemperature: {initial_temp / (i + 1)}\tAcceptance: {pow(e, -abs(fitness(new_tt) - best_fitness) / (initial_temp / (i + 1)))}")
+    if fitness(new_tt) > best_fitness or (random() < pow(e, (fitness(new_tt) - best_fitness) / (initial_temp / (i + 1))) and anneal):
         best_tt = new_tt
         best_fitness = fitness(new_tt)
 
