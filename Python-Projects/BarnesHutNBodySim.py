@@ -1,4 +1,4 @@
-# Not complete
+# Not complete, just trying implementing optimisation for N Body Sim using Barnes Hut
 
 import pygame
 from random import uniform, gauss
